@@ -1,5 +1,5 @@
 function validateHostel(req, res, next) {
-  const { name, location, roomType, roomsCount, pricePerRoom, imageUrl } =
+  const { name, location, roomType, roomsCount, pricePerRoom, imageUrl,amenities } =
     req.body;
   if (!name) return res.status(400).json({ message: "name is required" });
   // if (!featuredImage)
@@ -13,6 +13,7 @@ function validateHostel(req, res, next) {
   if (!pricePerRoom)
     return res.status(400).json({ message: "rent is required" });
 
+  if (!amenities) return res.status(400).json({ message: "image is required" });
   if (!imageUrl) return res.status(400).json({ message: "image is required" });
   if (
     !imageUrl ||

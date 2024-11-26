@@ -22,6 +22,11 @@ model User{
    hostels     Hostel[]
   @@map("Users")
 }
+model Amenity {
+  id       String  @id @default(uuid())
+  name     String   // e.g., "WiFi", "Parking"
+  hostel Hostel[] 
+}
 model Hostel {
   id           String    @id @default(uuid()) // Auto-incremented ID
   name         String                // Name of the hostel
@@ -33,6 +38,7 @@ model Hostel {
   updatedAt    DateTime @updatedAt  
   owner        String // Foreign key to reference User
   user         User    @relation(fields: [owner], references: [id])
+  amenities    Amenity[] 
   @@map("hostels")                  // Updated timestamp
 }
 

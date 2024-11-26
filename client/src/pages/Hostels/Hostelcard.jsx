@@ -1,68 +1,81 @@
-import React, { useEffect, useState } from "react";
+import {Link} from 'react-router-dom'
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
 
 const HostelCards = () => {
-  const [hostels, setHostels] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { id } = useParams();
+  console.log(id);
 
-  useEffect(() => {
-    const fetchHostels = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/hostels", {
-          method: "GET",
-          credentials: "include",
-        });
+  const { isLoading, isError, error, data: hostel } = useQuery({
+    queryKey: ["hostel", id],
+    queryFn: async () => {
+      const response = await fetch(`http://localhost:4000/HostelDetails/${id}`, {
+        credentials: "include",
+      });
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch hostels");
-        }
-
-        const data = await res.json();
-        setHostels(data);
-      } catch (error) {
-        console.error("Error fetching hostels:", error.message);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log('Error data:', errorData);
+        throw new Error(errorData.message || "Failed to fetch hostel");
       }
-    };
 
-    fetchHostels();
-  }, []);
+      return response.json();
+    },
+  });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <h2 className="text-3xl text-center font-semibold mt-5">
+        Loading... Please Wait...
+      </h2>
+    );
   }
 
+  if (isError) {
+    return (
+      <h2 className="text-3xl text-center font-semibold mt-5 text-red-500">
+        {error.message}
+      </h2>
+    );
+  }
+
+  console.log('Hostel data:', hostel);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
-      {hostels.map((hostel) => (
-        <div
-          key={hostel.id}
-          className="bg-white border rounded-lg shadow-lg overflow-hidden"
+    <div className="bg-white border rounded-lg shadow-lg overflow-hidden">
+      <img
+        src={hostel.imageUrl || 'fallback-image.jpg'}
+        alt={hostel.name || 'Hostel'}
+        className="w-full h-48 object-cover"
+      />
+      <div className="p-4">
+        <h3 className="text-xl font-semibold">{hostel.name || 'Unknown Name'}</h3>
+        <p className="text-gray-600">{hostel.location || 'Unknown Location'}</p>
+        <p className="mt-2">Room Type: {hostel.roomType || 'N/A'}</p>
+        <p className="mt-2">Rooms Available: {hostel.roomsCount || 0}</p>
+        <p className="mt-2">Price per Room: Ksh {hostel.pricePerRoom || 'N/A'}</p>
+        <p className="mt-2">
+          Amenities:
+          {Array.isArray(hostel.amenities) ? (
+  <ol className="list-disc list-inside">
+    {hostel.amenities.map((amenity, index) => (
+      <li key={index}>{amenity.name}</li> // Access the name property of each amenity object
+    ))}
+  </ol>
+) : (
+  <span>No amenities listed</span>
+)}
+
+        </p>
+        <Link
+          to={`/login`}
+          className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 inline-block text-center"
         >
-          <img
-            src={hostel.imageUrl}
-            alt={hostel.name}
-            className="w-full h-48 object-cover"
-          />
-          <div className="p-4">
-            <h3 className="text-xl font-semibold">{hostel.name}</h3>
-            <p className="text-gray-600">{hostel.location}</p>
-            <p className="mt-2">Room Type: {hostel.roomType}</p>
-            <p className="mt-2">Rooms Available: {hostel.roomsCount}</p>
-            <p className="mt-2">Price per Room: ${hostel.pricePerRoom}</p>
-            <button
-              onClick={() =>
-                alert(`Redirect to hostel details for ${hostel.name}`)
-              }
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              View Details
-            </button>
-          </div>
-        </div>
-      ))}
+          Book Now
+        </Link>
+      </div>
     </div>
   );
 };
-
 export default HostelCards;

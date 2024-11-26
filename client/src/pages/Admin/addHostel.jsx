@@ -1,55 +1,45 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 
 const uploadImage = async (image) => {
-  try {
-    const form = new FormData();
-    form.append("file", image);
-    form.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+  const formData = new FormData();
+  formData.append("file", image);
+  formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: form,
-      },
-    );
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.error?.message || "Failed to upload image");
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
     }
+  );
 
-    const data = await res.json();
-    return data.secure_url;
-  } catch (error) {
-    console.error("Error uploading image:", error.message);
-    throw error; // Re-throw the error to propagate it
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Image upload failed");
   }
+
+  const data = await response.json();
+  return data.secure_url;
 };
 
 const addHostel = async (hostelData) => {
-  try {
-    const res = await fetch("http://localhost:4000/addHostel", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(hostelData),
-    });
+  const response = await fetch("http://localhost:4000/addHostel", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(hostelData),
+  });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Failed to add hostel");
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error adding hostel to the server:", error.message);
-    throw error; // Re-throw the error to propagate it
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to add hostel");
   }
+
+  return await response.json();
 };
 
 const AddHostel = () => {
@@ -57,69 +47,74 @@ const AddHostel = () => {
     name: "",
     location: "",
     roomType: "",
-    roomsCount: 0,
-    pricePerRoom: 0.0,
+    roomsCount: "",
+    pricePerRoom: "",
     image: null,
+    amenities: [], // New field for amenities
   });
+
+  const [amenityInput, setAmenityInput] = useState(""); // State for the amenity input field
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async () => {
-      try {
-        // Step 1: Upload image
-        console.log("Starting image upload...");
-        const imageUrl = await uploadImage(formData.image);
-        console.log("Image uploaded successfully:", imageUrl);
-
-        // Step 2: Add hostel with the image URL
-        console.log("Sending hostel data to the server...");
-        return addHostel({ ...formData, imageUrl });
-      } catch (error) {
-        console.error("Error in mutation function:", error.message);
-        throw error;
+      if (!formData.image) {
+        throw new Error("Image is required");
       }
+
+      const imageUrl = await uploadImage(formData.image);
+      return addHostel({ ...formData, imageUrl });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       alert("Hostel added successfully!");
-      queryClient.invalidateQueries(["hostels"]); // Update the hostels list
-      navigate("hostels");
+      navigate(`/hostel/${data.id}`);
     },
     onError: (error) => {
-      console.error("Error in onError handler:", error.message);
-      alert("Error adding hostel: " + error.message);
+      alert(error.message || "Failed to add hostel");
     },
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Convert roomsCount to an integer if the field name is "roomsCount"
-    if (name === "roomsCount") {
-      setFormData({ ...formData, [name]: parseInt(value, 10) });
-    } else if (name === "pricePerRoom") {
-      // Convert pricePerRoom to a float
-      setFormData({ ...formData, [name]: parseFloat(value) });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]:
+        name === "roomsCount" || name === "pricePerRoom"
+          ? value === "" 
+            ? "" 
+            : parseFloat(value)
+          : value,
+    }));
   };
 
   const handleImageChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+    setFormData((prevData) => ({
+      ...prevData,
+      image: e.target.files[0],
+    }));
+  };
+
+  const handleAmenityAdd = () => {
+    if (amenityInput.trim() !== "") {
+      setFormData((prevData) => ({
+        ...prevData,
+        amenities: [...prevData.amenities, amenityInput.trim()],
+      }));
+      setAmenityInput(""); // Clear the input field after adding the amenity
+    }
+  };
+
+  const handleAmenityRemove = (amenity) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      amenities: prevData.amenities.filter((item) => item !== amenity),
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (!formData.image) {
-        alert("Please upload an image!");
-        return;
-      }
-      console.log("Submitting form data:", formData);
-      mutation.mutate(); // Trigger the mutation
-    } catch (error) {
-      console.error("Error in handleSubmit:", error.message);
-    }
+    mutation.mutate();
   };
 
   return (
@@ -162,7 +157,7 @@ const AddHostel = () => {
         <input
           type="number"
           name="roomsCount"
-          value={formData.roomsCount}
+          value={formData.roomsCount || ""}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded"
@@ -173,7 +168,7 @@ const AddHostel = () => {
         <input
           type="number"
           name="pricePerRoom"
-          value={formData.pricePerRoom}
+          value={formData.pricePerRoom || ""}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded"
@@ -188,6 +183,39 @@ const AddHostel = () => {
           required
           className="w-full p-2 border rounded"
         />
+      </label>
+      <label className="block mb-2">
+        Amenities:
+        <div className="flex items-center mb-2">
+          <input
+            type="text"
+            value={amenityInput}
+            onChange={(e) => setAmenityInput(e.target.value)}
+            className="w-full p-2 border rounded"
+            placeholder="Add an amenity"
+          />
+          <button
+            type="button"
+            onClick={handleAmenityAdd}
+            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Add
+          </button>
+        </div>
+        <ul>
+          {formData.amenities.map((amenity, index) => (
+            <li key={index} className="flex items-center justify-between">
+              {amenity}
+              <button
+                type="button"
+                onClick={() => handleAmenityRemove(amenity)}
+                className="text-red-500 ml-2"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
       </label>
       <button
         type="submit"
