@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -7,16 +7,24 @@ const HostelCards = () => {
   const { id } = useParams();
   console.log(id);
 
-  const { isLoading, isError, error, data: hostel } = useQuery({
+  const {
+    isLoading,
+    isError,
+    error,
+    data: hostel,
+  } = useQuery({
     queryKey: ["hostel", id],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:4000/HostelDetails/${id}`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `http://localhost:4000/HostelDetails/${id}`,
+        {
+          credentials: "include",
+        },
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log('Error data:', errorData);
+        console.log("Error data:", errorData);
         throw new Error(errorData.message || "Failed to fetch hostel");
       }
 
@@ -40,33 +48,36 @@ const HostelCards = () => {
     );
   }
 
-  console.log('Hostel data:', hostel);
+  console.log("Hostel data:", hostel);
 
   return (
     <div className="bg-white border rounded-lg shadow-lg overflow-hidden">
       <img
-        src={hostel.imageUrl || 'fallback-image.jpg'}
-        alt={hostel.name || 'Hostel'}
+        src={hostel.imageUrl || "fallback-image.jpg"}
+        alt={hostel.name || "Hostel"}
         className="w-full h-48 object-cover"
       />
       <div className="p-4">
-        <h3 className="text-xl font-semibold">{hostel.name || 'Unknown Name'}</h3>
-        <p className="text-gray-600">{hostel.location || 'Unknown Location'}</p>
-        <p className="mt-2">Room Type: {hostel.roomType || 'N/A'}</p>
+        <h3 className="text-xl font-semibold">
+          {hostel.name || "Unknown Name"}
+        </h3>
+        <p className="text-gray-600">{hostel.location || "Unknown Location"}</p>
+        <p className="mt-2">Room Type: {hostel.roomType || "N/A"}</p>
         <p className="mt-2">Rooms Available: {hostel.roomsCount || 0}</p>
-        <p className="mt-2">Price per Room: Ksh {hostel.pricePerRoom || 'N/A'}</p>
+        <p className="mt-2">
+          Price per Room: Ksh {hostel.pricePerRoom || "N/A"}
+        </p>
         <p className="mt-2">
           Amenities:
           {Array.isArray(hostel.amenities) ? (
-  <ol className="list-disc list-inside">
-    {hostel.amenities.map((amenity, index) => (
-      <li key={index}>{amenity.name}</li> // Access the name property of each amenity object
-    ))}
-  </ol>
-) : (
-  <span>No amenities listed</span>
-)}
-
+            <ol className="list-disc list-inside">
+              {hostel.amenities.map((amenity, index) => (
+                <li key={index}>{amenity.name}</li> // Access the name property of each amenity object
+              ))}
+            </ol>
+          ) : (
+            <span>No amenities listed</span>
+          )}
         </p>
         <Link
           to={`/login`}

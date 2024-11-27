@@ -7,7 +7,6 @@ function Home() {
   const navigate = useNavigate();
   return (
     <div>
-      
       <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-custom-blue text-white">
         <div className="w-full md:w-1/2 px-10 text-center md:text-right flex flex-col justify-center items-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">

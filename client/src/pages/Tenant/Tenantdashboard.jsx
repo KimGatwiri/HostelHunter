@@ -1,9 +1,9 @@
 import React from "react";
-import UserProfile from "../profile";
+import TenantProfile from "./TenantProfile";
 function Tenantdashboard() {
   return (
     <div>
-      <UserProfile/>
+      <TenantProfile />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const fetchHostels = async () => {
   const response = await fetch("http://localhost:4000/hostels");
@@ -11,10 +11,12 @@ const fetchHostels = async () => {
 };
 
 const HostelList = () => {
-  const { data: hostels, isLoading, isError, error } = useQuery(
-    "allhostels",
-    fetchHostels
-  );
+  const {
+    data: hostels,
+    isLoading,
+    isError,
+    error,
+  } = useQuery("allhostels", fetchHostels);
 
   const handleBookNow = (hostelId) => {
     alert(`Booking confirmed for hostel with ID: ${hostelId}`);
@@ -56,16 +58,17 @@ const HostelList = () => {
 
             {/* Owner Info */}
             <p className="text-gray-600 mt-1">
-              Owner: <span className="font-medium">{hostel.user.firstName}</span>
+              Owner:{" "}
+              <span className="font-medium">{hostel.user.firstName}</span>
             </p>
 
             {/* Book Now Button */}
             <Link
-            to={`/hostel/${hostel.id}`}
-            className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 inline-block text-center"
-        >
-            Book Now
-        </Link>
+              to={`/hostel/${hostel.id}`}
+              className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 inline-block text-center"
+            >
+              Book Now
+            </Link>
           </div>
         </div>
       ))}

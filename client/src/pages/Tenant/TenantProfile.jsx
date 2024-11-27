@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const UserProfile = () => {
+
+const TenantProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -72,7 +73,7 @@ const UserProfile = () => {
       {/* Update Button */}
       <div className="mt-6 text-center">
         <button
-          onClick={() => navigate("/updateProfile")}
+          onClick={() => navigate("/updateTenantProfile")}
           className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400"
         >
           Update Profile
@@ -82,4 +83,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default TenantProfile;

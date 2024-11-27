@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 
@@ -8,10 +7,13 @@ const Card = ({ hostel }) => {
   // Mutation to delete a hostel
   const deleteMutation = useMutation(
     async (hostelId) => {
-      const response = await fetch(`http://localhost:4000/hostels/${hostelId}`, {
-        method: "DELETE",
-        credentials: "include", // Include cookies if using session-based authentication
-      });
+      const response = await fetch(
+        `http://localhost:4000/hostels/${hostelId}`,
+        {
+          method: "DELETE",
+          credentials: "include", // Include cookies if using session-based authentication
+        },
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -24,12 +26,11 @@ const Card = ({ hostel }) => {
       // On success, invalidate the hostels query to refresh the list
       onSuccess: () => {
         queryClient.invalidateQueries("personalhostels"); // Replace "personalhostels" with your specific query key
-        
       },
       onError: (error) => {
         alert(`Failed to delete hostel: ${error.message}`);
       },
-    }
+    },
   );
 
   // Handle "Remove" button click
@@ -81,9 +82,7 @@ const Card = ({ hostel }) => {
         </button>
 
         {/* Update Button */}
-        <button
-          className="mt-4 ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
-        >
+        <button className="mt-4 ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">
           Update
         </button>
       </div>
@@ -92,4 +91,3 @@ const Card = ({ hostel }) => {
 };
 
 export default Card;
-

@@ -2,8 +2,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export async function createHostel(req, res) {
   try {
-    const { name, location, roomType, roomsCount, pricePerRoom, imageUrl,amenities } =
-      req.body;
+    const {
+      name,
+      location,
+      roomType,
+      roomsCount,
+      pricePerRoom,
+      imageUrl,
+      amenities,
+    } = req.body;
     const userId = req.userId;
     if (!userId) {
       return res.status(400).json({ message: "User ID is missing" });
@@ -21,8 +28,8 @@ export async function createHostel(req, res) {
         },
         owner: userId,
       },
-      include:{
-        amenities:true,
+      include: {
+        amenities: true,
       },
     });
     res.status(201).json(newHostel);
@@ -37,9 +44,8 @@ export async function fetchSingleHostel(req, res) {
     const hostel = await prisma.hostel.findUnique({
       where: { id },
       include: {
-
         user: true,
-        amenities:true,
+        amenities: true,
       },
     });
     if (!hostel) {
@@ -73,11 +79,9 @@ export async function deletehostel(req, res) {
     });
 
     if (!hostel) {
-      return res
-        .status(404)
-        .json({
-          message: "hostel not found or you're not authorized to delete it.",
-        });
+      return res.status(404).json({
+        message: "hostel not found or you're not authorized to delete it.",
+      });
     }
 
     await prisma.hostel.delete({
@@ -98,7 +102,7 @@ export async function fetchAllhostels(req, res) {
       where: {},
       include: {
         user: true,
-        amenities:true
+        amenities: true,
       },
     });
     res.status(200).json(hostels);
@@ -106,4 +110,3 @@ export async function fetchAllhostels(req, res) {
     res.status(500).json({ message: "something went wrong..." });
   }
 }
-

@@ -3,7 +3,6 @@
 // import { useParams } from "react-router-dom";
 // import { useQuery } from "react-query";
 
-
 // const HostelCards = () => {
 //   const { id } = useParams();
 //   console.log(id);

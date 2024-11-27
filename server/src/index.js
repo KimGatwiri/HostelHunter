@@ -11,7 +11,8 @@ import { fetchUserHostels } from "./controllers/Hostels.js";
 import { deletehostel } from "./controllers/Hostels.js";
 import { fetchAllhostels } from "./controllers/Hostels.js";
 import { getProfile } from "./controllers/users.js";
-const app=express()
+import { updateProfile } from "./controllers/users.js";
+const app = express();
 app.use(express.json());
 app.use(
   cors({
@@ -23,12 +24,13 @@ app.use(
 app.use(cookieParser());
 app.post("/users", validateUserDetails, registeruser);
 app.post("/auth/login", loginuser);
-app.get("/Profile",verifyToken,getProfile)
+app.get("/Profile", verifyToken, getProfile);
+app.put("/updateProfile",verifyToken,updateProfile)
 app.post("/addHostel", verifyToken, validateHostel, createHostel);
 app.get("/HostelDetails/:id", fetchSingleHostel);
-app.get("/hostels",fetchAllhostels) 
+app.get("/hostels", fetchAllhostels);
 app.get("/hostels/user", verifyToken, fetchUserHostels);
-app.delete("/hostels/:id",verifyToken,deletehostel)
+app.delete("/hostels/:id", verifyToken, deletehostel);
 app.listen(4000, () => {
   console.log(`server is running on port 4000...`);
 });

@@ -14,11 +14,10 @@ function Navigation() {
       </div>
 
       {/* Navigation Links */}
-      <div className="flex space-x-14 text-lg md:text-xl font-extrabold"> {/* Reduced gap between links */}
-        <Link
-          to="/"
-          className="hover:text-yellow-500 transition duration-300"
-        >
+      <div className="flex space-x-14 text-lg md:text-xl font-extrabold">
+        {" "}
+        {/* Reduced gap between links */}
+        <Link to="/" className="hover:text-yellow-500 transition duration-300">
           Home
         </Link>
         <Link

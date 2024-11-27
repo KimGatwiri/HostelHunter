@@ -1,24 +1,26 @@
 import React from "react";
 import { useQuery } from "react-query";
-import Card from "./card";; // Assuming Card component is in the same folder
+import Card from "./card"; // Assuming Card component is in the same folder
 
 function PersonalHostels() {
-  const { data: hostels = [], isLoading, isError, error } = useQuery(
-    "personalhostels",
-    async () => {
-      const response = await fetch("http://localhost:4000/hostels/user", {
-        method: "GET",
-        credentials: "include",
-      });
+  const {
+    data: hostels = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery("personalhostels", async () => {
+    const response = await fetch("http://localhost:4000/hostels/user", {
+      method: "GET",
+      credentials: "include",
+    });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch hostels");
-      }
-
-      return response.json();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch hostels");
     }
-  );
+
+    return response.json();
+  });
 
   if (isLoading) return <h2>Loading...</h2>;
   if (isError) return <h2 className="text-red-500">{error.message}</h2>;

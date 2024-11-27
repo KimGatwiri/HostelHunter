@@ -27,28 +27,65 @@ export const registeruser = async (req, res) => {
 };
 export async function getProfile(req, res) {
   try {
-    const userId = req.userId; // Extract `id` from verified JWT token
+    const userId = req.userId;
 
-    // Validate input
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
 
-    // Fetch the user profile from the database
     const user = await client.user.findUnique({
       where: { id: userId },
-      
     });
 
-    // Handle user not found
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return user profile
     res.status(200).json(user);
   } catch (error) {
     console.error("Error fetching profile:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
+export async function updateProfile(req, res) {
+  const { firstName, lastName, emailAddress, password } = req.body;
+  const userId = req.userId; 
+  try {
+   
+    const user = await client.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    let hashedPassword = password;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10); 
+    }
+
+    const updatedUser = await client.user.update({
+      where: { id: userId },
+      data: { firstName, lastName, emailAddress, password: hashedPassword },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        emailAddress: true,
+        
+        
+      }, 
+    });
+
+    res.json({ message: 'Profile updated successfully', user: updatedUser });
+  } catch (err) {
+    console.error('Error updating profile:', err); // Log detailed error
+    if (err.code === 'P2002') { // Unique constraint violation (e.g., email already taken)
+      return res.status(400).json({ error: 'Email address already in use' });
+    }
+    res.status(500).json({ error: 'An error occurred while updating the profile' });
   }
 }

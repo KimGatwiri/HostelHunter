@@ -1,6 +1,13 @@
 function validateHostel(req, res, next) {
-  const { name, location, roomType, roomsCount, pricePerRoom, imageUrl,amenities } =
-    req.body;
+  const {
+    name,
+    location,
+    roomType,
+    roomsCount,
+    pricePerRoom,
+    imageUrl,
+    amenities,
+  } = req.body;
   if (!name) return res.status(400).json({ message: "name is required" });
   // if (!featuredImage)
   //   return res.status(400).json({ message: "featured Image is required" });

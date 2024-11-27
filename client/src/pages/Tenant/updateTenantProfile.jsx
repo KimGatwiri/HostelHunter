@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-simple-toasts';
 import { useNavigate } from 'react-router';
-const UpdateProfile = () => {
+const UpdateTenantProfile = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -72,7 +72,7 @@ const UpdateProfile = () => {
       });
   
       // Redirect after update
-      navigate('/landlord-dashboard');
+      navigate('/tenant-dashboard');
     } catch (error) {
       toast(error.message || 'An error occurred');
       console.error('Error updating profile:', error);
@@ -137,4 +137,4 @@ const UpdateProfile = () => {
   );
 };
 
-export default UpdateProfile;
+export default UpdateTenantProfile;
