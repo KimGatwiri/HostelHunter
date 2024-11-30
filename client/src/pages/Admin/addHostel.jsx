@@ -53,7 +53,7 @@ const AddHostel = () => {
     roomsCount: "",
     pricePerRoom: "",
     image: null,
-    amenities: [], // New field for amenities
+    amenities: [],
   });
 
   const [amenityInput, setAmenityInput] = useState(""); // State for the amenity input field

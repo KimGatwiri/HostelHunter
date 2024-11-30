@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-simple-toasts';
-import { useNavigate } from 'react-router';
+import React, { useState, useEffect } from "react";
+import { toast } from "react-simple-toasts";
+import { useNavigate } from "react-router";
 const UpdateTenantProfile = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    emailAddress: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    emailAddress: "",
+    password: "",
   });
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/profile', {
+        const response = await fetch("http://localhost:4000/profile", {
           credentials: "include",
         });
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch profile data');
+          throw new Error(errorData.error || "Failed to fetch profile data");
         }
 
         const data = await response.json();
         setFormData({
-          firstName: data.firstName || '',
-          lastName: data.lastName || '',
-          emailAddress: data.emailAddress || '',
-          password: '', // Leave password blank
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          emailAddress: data.emailAddress || "",
+          password: "",
         });
       } catch (error) {
-        toast(error.message || 'An error occurred while fetching profile data');
-        console.error('Error fetching profile data:', error);
+        toast(error.message || "An error occurred while fetching profile data");
+        console.error("Error fetching profile data:", error);
       }
     };
 
@@ -43,44 +43,40 @@ const UpdateTenantProfile = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted');
+    console.log("Form submitted");
     try {
-      const response = await fetch('http://localhost:4000/updateProfile', {
-        method: 'PUT',
+      const response = await fetch("http://localhost:4000/updateProfile", {
+        method: "PUT",
         credentials: "include",
         headers: {
-          'Content-Type': 'application/json',  // Add content-type header
+          "Content-Type": "application/json", // Add content-type header
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update profile');
+        throw new Error(errorData.error || "Failed to update profile");
       }
-  
+
       const data = await response.json();
-      toast('Profile updated successfully!');
-      console.log('Updated user:', data.user);
-  
-      // Update state immediately with the new data
+      toast("Profile updated successfully!");
+      console.log("Updated user:", data.user);
+
       setFormData({
         firstName: data.user.firstName,
         lastName: data.user.lastName,
-        emailAddress:data. user.emailAddress,
-        password: '',  // Keep password blank as before
+        emailAddress: data.user.emailAddress,
+        password: "",
       });
-  
-      // Redirect after update
-      navigate('/tenant-dashboard');
+
+      navigate("/tenant-dashboard");
     } catch (error) {
-      toast(error.message || 'An error occurred');
-      console.error('Error updating profile:', error);
+      toast(error.message || "An error occurred");
+      console.error("Error updating profile:", error);
     }
   };
-  
-  
-    
+
   return (
     <div className="p-4 max-w-md mx-auto bg-white rounded shadow">
       <h1 className="text-xl font-bold mb-4">Update Profile</h1>

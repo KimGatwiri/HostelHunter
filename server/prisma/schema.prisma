@@ -19,26 +19,40 @@ model User{
   emailAddress String @unique
   password String
   role Role
+  bookings    Booking[]
    hostels     Hostel[]
   @@map("Users")
 }
 model Amenity {
   id       String  @id @default(uuid())
-  name     String   // e.g., "WiFi", "Parking"
+  name     String   
   hostel Hostel[] 
 }
 model Hostel {
-  id           String    @id @default(uuid()) // Auto-incremented ID
-  name         String                // Name of the hostel
-  location     String              // Location of the hostel
-  roomType     String               // Type of rooms
-  roomsCount   Int                                     // Number of rooms
+  id           String    @id @default(uuid()) 
+  name         String                
+  location     String             
+  roomType     String              
+  roomsCount   Int                                     
   pricePerRoom Float                                  
   imageUrl     String                       
   updatedAt    DateTime @updatedAt  
-  owner        String // Foreign key to reference User
+  owner        String 
   user         User    @relation(fields: [owner], references: [id])
+   bookings     Booking[]  
   amenities    Amenity[] 
-  @@map("hostels")                  // Updated timestamp
+  @@map("hostels")                 
+}
+ model Booking {
+  id           String    @id @default(uuid()) 
+  userId       String                           
+  hostelId     String                          
+  bookingDate  DateTime   @default(now())       
+   roomsCount   Int ?                     
+  totalPrice   Float     
+  status       String  @default("pending")                       
+  user         User      @relation(fields: [userId], references: [id])  
+  hostel       Hostel    @relation(fields: [hostelId], references: [id]) 
+  @@map("bookings")
 }
 

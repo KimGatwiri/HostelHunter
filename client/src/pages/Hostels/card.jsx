@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 const Card = ({ hostel }) => {
+  const [message, setMessage] = useState(""); // State for success/error messages
   const queryClient = useQueryClient();
+  const navigate = useNavigate(); // Initialize navigate hook
 
   // Mutation to delete a hostel
   const deleteMutation = useMutation(
@@ -11,7 +14,7 @@ const Card = ({ hostel }) => {
         `http://localhost:4000/hostels/${hostelId}`,
         {
           method: "DELETE",
-          credentials: "include", // Include cookies if using session-based authentication
+          credentials: "include",
         },
       );
 
@@ -23,26 +26,34 @@ const Card = ({ hostel }) => {
       return response.json();
     },
     {
-      // On success, invalidate the hostels query to refresh the list
       onSuccess: () => {
-        queryClient.invalidateQueries("personalhostels"); // Replace "personalhostels" with your specific query key
+        queryClient.invalidateQueries("personalhostels");
+        setMessage("Hostel successfully deleted.");
       },
       onError: (error) => {
-        alert(`Failed to delete hostel: ${error.message}`);
+        if (error.message.includes("booked")) {
+          setMessage(
+            "Sorry, this hostel cannot be deleted because it has already been booked.",
+          );
+        } else {
+          setMessage(
+            "Sorry, this hostel cannot be deleted because it has already been booked.",
+          );
+        }
       },
     },
   );
 
-  // Handle "Remove" button click
   const handleRemove = () => {
-    if (window.confirm(`Are you sure you want to delete ${hostel.name}?`)) {
-      deleteMutation.mutate(hostel.id); // Pass the hostel ID to the mutation
-    }
+    deleteMutation.mutate(hostel.id);
+  };
+
+  const handleUpdate = () => {
+    navigate(`/updatehostel/${hostel.id}`);
   };
 
   return (
     <div className="bg-white border rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-      {/* Image */}
       <img
         src={hostel.imageUrl}
         alt={hostel.name}
@@ -50,41 +61,49 @@ const Card = ({ hostel }) => {
       />
 
       <div className="p-4">
-        {/* Hostel Name */}
         <h3 className="text-xl font-semibold text-gray-800">{hostel.name}</h3>
 
-        {/* Location */}
         <p className="text-gray-600 mt-1">{hostel.location}</p>
 
-        {/* Room Type */}
         <p className="text-gray-800 mt-2">
           Room Type: <span className="font-medium">{hostel.roomType}</span>
         </p>
 
-        {/* Rooms Available */}
         <p className="text-gray-800 mt-2">
           Rooms Available:{" "}
           <span className="font-medium">{hostel.roomsCount}</span>
         </p>
 
-        {/* Price */}
         <p className="text-gray-800 mt-2">
-          Price per Room:{" "}
-          <span className="font-medium">${hostel.pricePerRoom}</span>
+          Rent per Room:{" "}
+          <span className="font-medium">ksh {hostel.pricePerRoom}</span>
         </p>
 
-        {/* Remove Button */}
         <button
-          onClick={handleRemove} // Attach the delete logic to this button
+          onClick={handleRemove}
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
         >
           Remove
         </button>
 
-        {/* Update Button */}
-        <button className="mt-4 ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+        <button
+          onClick={handleUpdate}
+          className="mt-4 ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+        >
           Update
         </button>
+
+        {message && (
+          <p
+            className={`mt-4 text-sm font-medium ${
+              message.includes("successfully")
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+          >
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );

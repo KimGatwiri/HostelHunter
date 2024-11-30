@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [role, setRole] = useState("");
@@ -7,7 +7,7 @@ function Signup() {
   const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
 
   const handleRoleChange = (event) => {
     setRole(event.target.value);
@@ -34,20 +34,19 @@ function Signup() {
       });
 
       if (response.ok) {
-        // If registration is successful, navigate to the login page
         navigate("/login");
       } else {
         const errorData = await response.json();
-        alert("Error: " + errorData.message); // Show error if something goes wrong
+        alert("Error: " + errorData.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error: " + error.message); // Handle any other errors
+      alert("Error: " + error.message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-900 to-blue-700">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           Create Your Account

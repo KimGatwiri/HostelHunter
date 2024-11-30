@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 const TenantProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -12,12 +11,11 @@ const TenantProfile = () => {
     const fetchProfile = async () => {
       try {
         const response = await fetch("http://localhost:4000/profile", {
-          credentials: "include", 
+          credentials: "include",
         });
 
         if (!response.ok) {
           if (response.status === 401) {
-            
             navigate("/login");
           }
           throw new Error(`Failed to fetch profile: ${response.statusText}`);
@@ -32,7 +30,7 @@ const TenantProfile = () => {
       }
     };
 
-    fetchProfile(); // Call the API
+    fetchProfile();
   }, [navigate]);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
@@ -40,12 +38,10 @@ const TenantProfile = () => {
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-lg w-full max-w-sm mx-auto">
-      {/* Headline */}
       <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
         Hello, {user?.firstName}
       </h1>
 
-      {/* Avatar Section */}
       <div className="flex justify-center mb-6">
         <img
           src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=random`}
@@ -54,23 +50,19 @@ const TenantProfile = () => {
         />
       </div>
 
-      {/* User Info Section */}
       <div className="space-y-4">
-        {/* Name */}
         <div className="text-center">
           <h2 className="text-xl font-semibold text-teal-600">
             {user?.firstName} {user?.lastName}
           </h2>
         </div>
 
-        {/* Email */}
         <div className="flex justify-between items-center text-gray-800 border-b pb-2">
           <span className="font-medium text-gray-600">Email:</span>
           <span className="font-bold">{user?.emailAddress}</span>
         </div>
       </div>
 
-      {/* Update Button */}
       <div className="mt-6 text-center">
         <button
           onClick={() => navigate("/updateTenantProfile")}

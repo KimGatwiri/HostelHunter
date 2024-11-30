@@ -4,7 +4,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query"; // Import React Query
+import { QueryClient, QueryClientProvider } from "react-query";
 import "./index.css";
 import Home from "./pages/Home";
 import Login from "./pages/login";
@@ -17,7 +17,8 @@ import HostelList from "./pages/Hostels/listing";
 import UpdateProfile from "./pages/updateProfile.JSX";
 import TenantProfile from "./pages/Tenant/TenantProfile";
 import UpdateTenantProfile from "./pages/Tenant/updateTenantProfile";
-// Create a QueryClient instance
+
+import BookingHostel from "./pages/Tenant/Booking";
 const queryClient = new QueryClient();
 
 function App() {
@@ -25,7 +26,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          {/* Define route for Home, Tenant, Admin routes and Hostel */}
           <Route
             path="/"
             element={
@@ -50,6 +50,7 @@ function App() {
               </WithNavigation>
             }
           />
+
           <Route
             path="/hostel/:id"
             element={
@@ -90,7 +91,15 @@ function App() {
               </WithNavigation>
             }
           />
-          {/* Routes without Navigation */}
+          <Route
+            path="/BookingHostel"
+            element={
+              <WithNavigation>
+                <BookingHostel />
+              </WithNavigation>
+            }
+          />
+
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
@@ -99,18 +108,17 @@ function App() {
   );
 }
 
-// Helper component to conditionally render the Navigation bar
 function WithNavigation({ children }) {
   const location = useLocation();
-  // Don't render the navigation bar on login or signup pages
+
   if (location.pathname === "/login" || location.pathname === "/signup") {
     return children;
   }
 
   return (
     <>
-      <Navigation /> {/* Render the Navigation Bar */}
-      {children} {/* Render the rest of the page content */}
+      <Navigation />
+      {children}
     </>
   );
 }

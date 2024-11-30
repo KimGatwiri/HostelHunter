@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
-import Card from "./card"; // Assuming Card component is in the same folder
+import Card from "./card";
 
 function PersonalHostels() {
   const {

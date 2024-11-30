@@ -48,23 +48,21 @@ export async function getProfile(req, res) {
   }
 }
 
-
 export async function updateProfile(req, res) {
   const { firstName, lastName, emailAddress, password } = req.body;
-  const userId = req.userId; 
+  const userId = req.userId;
   try {
-   
     const user = await client.user.findUnique({
       where: { id: userId },
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     let hashedPassword = password;
     if (password) {
-      hashedPassword = await bcrypt.hash(password, 10); 
+      hashedPassword = await bcrypt.hash(password, 10);
     }
 
     const updatedUser = await client.user.update({
@@ -75,17 +73,18 @@ export async function updateProfile(req, res) {
         firstName: true,
         lastName: true,
         emailAddress: true,
-        
-        
-      }, 
+      },
     });
 
-    res.json({ message: 'Profile updated successfully', user: updatedUser });
+    res.json({ message: "Profile updated successfully", user: updatedUser });
   } catch (err) {
-    console.error('Error updating profile:', err); // Log detailed error
-    if (err.code === 'P2002') { // Unique constraint violation (e.g., email already taken)
-      return res.status(400).json({ error: 'Email address already in use' });
+    console.error("Error updating profile:", err); // Log detailed error
+    if (err.code === "P2002") {
+      // Unique constraint violation (e.g., email already taken)
+      return res.status(400).json({ error: "Email address already in use" });
     }
-    res.status(500).json({ error: 'An error occurred while updating the profile' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the profile" });
   }
 }

@@ -42,19 +42,19 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-blue-900">
+      <div className="bg-white shadow-lg rounded-lg p-10 w-full max-w-lg">
+        <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
           Welcome Back
         </h2>
         {error && (
           <p className="text-red-500 text-sm text-center mb-4">{error}</p>
         )}
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-600"
+              className="block text-lg font-semibold text-gray-700"
             >
               Email Address
             </label>
@@ -63,14 +63,14 @@ function Login() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-3 mt-2 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your email"
             />
           </div>
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-600"
+              className="block text-lg font-semibold text-gray-700"
             >
               Password
             </label>
@@ -79,33 +79,33 @@ function Login() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-3 mt-2 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter your password"
             />
           </div>
           <div className="flex items-center justify-between">
-            <label className="text-sm text-gray-600 flex items-center">
+            <label className="text-lg text-gray-700 flex items-center">
               <input
                 type="checkbox"
-                className="mr-2 h-4 w-4 border rounded focus:ring-blue-400 focus:ring-2"
+                className="mr-3 h-5 w-5 border rounded focus:ring-blue-400 focus:ring-2"
               />
               Remember Me
             </label>
             <a
               href="/forgot-password"
-              className="text-sm text-blue-500 hover:underline"
+              className="text-lg text-blue-500 hover:underline"
             >
               Forgot Password?
             </a>
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300"
+            className="w-full bg-blue-500 text-white py-3 px-5 rounded-lg hover:bg-blue-600 transition duration-300 text-lg font-semibold"
           >
             Log In
           </button>
         </form>
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p className="text-center text-lg text-gray-600 mt-5">
           Don’t have an account?{" "}
           <a href="/signup" className="text-blue-500 hover:underline">
             Sign Up

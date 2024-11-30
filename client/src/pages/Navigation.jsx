@@ -4,19 +4,12 @@ import { Link } from "react-router-dom";
 function Navigation() {
   return (
     <nav className="bg-white text-black px-6 py-4 flex items-center justify-between shadow-lg">
-      {/* Logo */}
       <div className="flex items-center space-x-3">
-        <img
-          src="./logo.PNG" // Replace with the path to your logo
-          alt="Logo"
-          className="h-24 w-24 object-contain" // Increased logo size (height & width)
-        />
+        <img src="./logo.PNG" alt="Logo" className="h-32 w-32 object-contain" />
       </div>
 
-      {/* Navigation Links */}
       <div className="flex space-x-14 text-lg md:text-xl font-extrabold">
         {" "}
-        {/* Reduced gap between links */}
         <Link to="/" className="hover:text-yellow-500 transition duration-300">
           Home
         </Link>
